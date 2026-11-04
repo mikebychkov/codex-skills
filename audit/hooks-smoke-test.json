@@ -1,0 +1,22 @@
+{
+  "before": {
+    "returncode": 0,
+    "stdout": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+    "stderr": ""
+  },
+  "after_unchanged": {
+    "returncode": 0,
+    "stdout": "after-validation: tracked repository state is unchanged.",
+    "stderr": ""
+  },
+  "verify_unchanged": {
+    "returncode": 0,
+    "stdout": "Working-tree status: UNCHANGED.\nTracked repository state matches the review baseline.",
+    "stderr": ""
+  },
+  "after_changed": {
+    "returncode": 10,
+    "stdout": "",
+    "stderr": "after-validation: tracked working-tree or Git state changed unexpectedly.\nafter-validation: automatic revert or cleanup is forbidden."
+  }
+}

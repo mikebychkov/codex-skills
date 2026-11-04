@@ -1,0 +1,18 @@
+{
+  "hooks/before-validation/hook.sh": {
+    "ok": true,
+    "stderr": ""
+  },
+  "hooks/after-validation/hook.sh": {
+    "ok": true,
+    "stderr": ""
+  },
+  "hooks/verify-working-tree/hook.sh": {
+    "ok": true,
+    "stderr": ""
+  },
+  "environment/example-validation-run.sh": {
+    "ok": true,
+    "stderr": ""
+  }
+}

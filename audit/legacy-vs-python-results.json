@@ -1,0 +1,326 @@
+[
+  {
+    "scenario": "unchanged",
+    "old": {
+      "initial": {
+        "rc": 0,
+        "out": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+        "err": ""
+      },
+      "after": {
+        "rc": 0,
+        "out": "after-validation: tracked repository state is unchanged.",
+        "err": ""
+      },
+      "final": {
+        "rc": 0,
+        "out": "Working-tree status: UNCHANGED.\nTracked repository state matches the review baseline.",
+        "err": ""
+      }
+    },
+    "new": {
+      "initial": {
+        "rc": 0,
+        "out": "init-review: baseline recorded independently of Maven",
+        "err": ""
+      },
+      "after": {
+        "rc": 0,
+        "out": "after-validation: tracked content and checked Git state UNCHANGED",
+        "err": ""
+      },
+      "final": {
+        "rc": 0,
+        "out": "Working-tree status: tracked content and checked Git state UNCHANGED",
+        "err": ""
+      }
+    }
+  },
+  {
+    "scenario": "tracked_modified",
+    "old": {
+      "initial": {
+        "rc": 0,
+        "out": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+        "err": ""
+      },
+      "after": {
+        "rc": 10,
+        "out": "",
+        "err": "after-validation: tracked working-tree or Git state changed unexpectedly.\nafter-validation: automatic revert or cleanup is forbidden."
+      },
+      "final": {
+        "rc": 10,
+        "out": "",
+        "err": "Working-tree status: CHANGED.\nTracked repository state differs from the review baseline."
+      }
+    },
+    "new": {
+      "initial": {
+        "rc": 0,
+        "out": "init-review: baseline recorded independently of Maven",
+        "err": ""
+      },
+      "after": {
+        "rc": 10,
+        "out": "",
+        "err": "after-validation: Git state CHANGED (categories: status, worktree_diff). No automatic revert."
+      },
+      "final": {
+        "rc": 10,
+        "out": "",
+        "err": "Working-tree status: Git state CHANGED (categories: status, worktree_diff). No automatic revert."
+      }
+    }
+  },
+  {
+    "scenario": "settings_missing",
+    "old": {
+      "initial": {
+        "rc": 3,
+        "out": "",
+        "err": "Maven validation was not executed because MAVEN_SETTINGS was not configured or was unavailable to the review environment."
+      },
+      "baseline_exists": false
+    },
+    "new": {
+      "initial": {
+        "rc": 0,
+        "out": "init-review: baseline recorded independently of Maven",
+        "err": ""
+      },
+      "baseline_exists": true
+    }
+  },
+  {
+    "scenario": "unsafe_inside_repo",
+    "old": {
+      "initial": {
+        "rc": 12,
+        "out": "",
+        "err": "REVIEW_STATE_DIR must be outside TARGET_REPO."
+      },
+      "directory_created_inside_repo": true
+    },
+    "new": {
+      "initial": {
+        "rc": 12,
+        "out": "",
+        "err": "State directory is inside the target repository"
+      },
+      "directory_created_inside_repo": false
+    }
+  },
+  {
+    "scenario": "baseline_reinitialization",
+    "old": {
+      "initial": {
+        "rc": 0,
+        "out": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+        "err": ""
+      },
+      "second_init": {
+        "rc": 0,
+        "out": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+        "err": ""
+      }
+    },
+    "new": {
+      "initial": {
+        "rc": 0,
+        "out": "init-review: baseline recorded independently of Maven",
+        "err": ""
+      },
+      "second_init": {
+        "rc": 12,
+        "out": "",
+        "err": "Review state directory already exists; use unique REVIEW_STATE_DIR"
+      }
+    }
+  },
+  {
+    "scenario": "tag_changed",
+    "old": {
+      "initial": {
+        "rc": 0,
+        "out": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+        "err": ""
+      },
+      "after": {
+        "rc": 0,
+        "out": "after-validation: tracked repository state is unchanged.",
+        "err": ""
+      },
+      "final": {
+        "rc": 0,
+        "out": "Working-tree status: UNCHANGED.\nTracked repository state matches the review baseline.",
+        "err": ""
+      }
+    },
+    "new": {
+      "initial": {
+        "rc": 0,
+        "out": "init-review: baseline recorded independently of Maven",
+        "err": ""
+      },
+      "after": {
+        "rc": 10,
+        "out": "",
+        "err": "after-validation: Git state CHANGED (categories: refs). No automatic revert."
+      },
+      "final": {
+        "rc": 10,
+        "out": "",
+        "err": "Working-tree status: Git state CHANGED (categories: refs). No automatic revert."
+      }
+    }
+  },
+  {
+    "scenario": "branch_changed_same_commit",
+    "old": {
+      "initial": {
+        "rc": 0,
+        "out": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+        "err": ""
+      },
+      "after": {
+        "rc": 0,
+        "out": "after-validation: tracked repository state is unchanged.",
+        "err": ""
+      },
+      "final": {
+        "rc": 0,
+        "out": "Working-tree status: UNCHANGED.\nTracked repository state matches the review baseline.",
+        "err": ""
+      }
+    },
+    "new": {
+      "initial": {
+        "rc": 0,
+        "out": "init-review: baseline recorded independently of Maven",
+        "err": ""
+      },
+      "after": {
+        "rc": 10,
+        "out": "",
+        "err": "after-validation: Git state CHANGED (categories: head_symbolic, refs). No automatic revert."
+      },
+      "final": {
+        "rc": 10,
+        "out": "",
+        "err": "Working-tree status: Git state CHANGED (categories: head_symbolic, refs). No automatic revert."
+      }
+    }
+  },
+  {
+    "scenario": "git_config_changed",
+    "old": {
+      "initial": {
+        "rc": 0,
+        "out": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+        "err": ""
+      },
+      "after": {
+        "rc": 0,
+        "out": "after-validation: tracked repository state is unchanged.",
+        "err": ""
+      },
+      "final": {
+        "rc": 0,
+        "out": "Working-tree status: UNCHANGED.\nTracked repository state matches the review baseline.",
+        "err": ""
+      }
+    },
+    "new": {
+      "initial": {
+        "rc": 0,
+        "out": "init-review: baseline recorded independently of Maven",
+        "err": ""
+      },
+      "after": {
+        "rc": 10,
+        "out": "",
+        "err": "after-validation: Git state CHANGED (categories: git_config). No automatic revert."
+      },
+      "final": {
+        "rc": 10,
+        "out": "",
+        "err": "Working-tree status: Git state CHANGED (categories: git_config). No automatic revert."
+      }
+    }
+  },
+  {
+    "scenario": "missing_baseline",
+    "old": {
+      "initial": {
+        "rc": 11,
+        "out": "",
+        "err": "Review baseline is unavailable."
+      }
+    },
+    "new": {
+      "initial": {
+        "rc": 11,
+        "out": "",
+        "err": "Baseline state directory unavailable"
+      }
+    }
+  },
+  {
+    "scenario": "runner_maven_failure_mutates",
+    "old": {
+      "runner": {
+        "rc": 7,
+        "out": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+        "err": ""
+      },
+      "working_tree_changed": true
+    },
+    "new": {
+      "runner": {
+        "rc": 10,
+        "out": "init-review: baseline recorded independently of Maven\nbefore-validation: tracked content and checked Git state UNCHANGED\nbefore-validation: Maven prerequisites satisfied",
+        "err": "after-validation: Git state CHANGED (categories: status, worktree_diff). No automatic revert.\nWorking-tree status: Git state CHANGED (categories: status, worktree_diff). No automatic revert."
+      },
+      "working_tree_changed": true
+    }
+  },
+  {
+    "scenario": "runner_maven_failure_no_change",
+    "old": {
+      "runner": {
+        "rc": 7,
+        "out": "before-validation: baseline recorded.\nbefore-validation: tracked repository state captured successfully.",
+        "err": ""
+      },
+      "working_tree_changed": false
+    },
+    "new": {
+      "runner": {
+        "rc": 7,
+        "out": "init-review: baseline recorded independently of Maven\nbefore-validation: tracked content and checked Git state UNCHANGED\nbefore-validation: Maven prerequisites satisfied\nafter-validation: tracked content and checked Git state UNCHANGED\nWorking-tree s",
+        "err": ""
+      },
+      "working_tree_changed": false
+    }
+  },
+  {
+    "scenario": "runner_missing_settings",
+    "old": {
+      "runner": {
+        "rc": 3,
+        "out": "",
+        "err": "Maven validation was not executed because MAVEN_SETTINGS was not configured or was unavailable to the review environment."
+      },
+      "working_tree_changed": false
+    },
+    "new": {
+      "runner": {
+        "rc": 0,
+        "out": "init-review: baseline recorded independently of Maven\nbefore-validation: tracked content and checked Git state UNCHANGED\nafter-validation: tracked content and checked Git state UNCHANGED\nWorking-tree status: tracked content and checked Git state UNCH",
+        "err": "Maven validation was not executed because MAVEN_SETTINGS was not configured or was unavailable to the review environment.\nMaven unavailable: continue static review"
+      },
+      "working_tree_changed": false
+    }
+  }
+]

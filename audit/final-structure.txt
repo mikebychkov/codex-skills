@@ -1,0 +1,63 @@
+review-system/
+├── agents/
+│   ├── judge/
+│   │   └── README.md
+│   └── reviewer/
+│       └── README.md
+├── audit/
+│   ├── consistency-check.md
+│   ├── coverage-check.json
+│   ├── final-structure.txt
+│   ├── hooks-smoke-test.json
+│   ├── hooks-syntax-check.json
+│   ├── legacy-vs-python-results.json
+│   ├── legacy-vs-python-summary.md
+│   ├── new-mr-comments-rules.md
+│   ├── original-to-new-map.md
+│   └── python-migration.md
+├── environment/
+│   ├── example-validation-run.py
+│   ├── example.env
+│   └── README.md
+├── hooks/
+│   ├── after-validation/
+│   │   ├── hook.py
+│   │   └── README.md
+│   ├── before-validation/
+│   │   ├── hook.py
+│   │   └── README.md
+│   ├── init-review/
+│   │   ├── hook.py
+│   │   └── README.md
+│   ├── verify-working-tree/
+│   │   ├── hook.py
+│   │   └── README.md
+│   ├── _integrity.py
+│   └── README.md
+├── policies/
+│   ├── command-policy.yaml
+│   ├── network-policy.yaml
+│   └── secrets-policy.yaml
+├── skills/
+│   ├── review-merge-request/
+│   │   ├── assets/
+│   │   │   └── output-format.md
+│   │   ├── references/
+│   │   │   ├── database.md
+│   │   │   ├── java.md
+│   │   │   ├── maven-validation.md
+│   │   │   ├── scope.md
+│   │   │   ├── security.md
+│   │   │   ├── severity.md
+│   │   │   ├── spring.md
+│   │   │   └── testing.md
+│   │   ├── rules/
+│   │   │   ├── generic.md
+│   │   │   ├── README.md
+│   │   │   └── team-review-rules.md
+│   │   └── SKILL.md
+│   └── review-tech-spec/
+│       ├── references/
+│       │   └── README.md
+│       └── SKILL.md
+└── AGENTS.md

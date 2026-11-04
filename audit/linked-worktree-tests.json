@@ -1,0 +1,12 @@
+{
+  "normal_unchanged": "PASS",
+  "normal_config_mutation": "PASS",
+  "linked_unchanged": "PASS",
+  "linked_config_mutation": "PASS",
+  "linked_worktree_config": "PASS",
+  "linked_gitdir_reject_no_write": "PASS",
+  "common_gitdir_reject_no_write": "PASS",
+  "source_tree_reject_no_write": "PASS",
+  "symlink_common_gitdir_reject": "PASS",
+  "tracked_change": "PASS"
+}

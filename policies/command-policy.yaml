@@ -1,0 +1,83 @@
+# Harness policy example.
+# Enforce this policy in the actual execution harness; do not rely only on model instructions.
+
+default: deny
+
+read_only_commands:
+  - "pwd"
+  - "ls"
+  - "ls -la"
+  - "find . -type f"
+  - "cat <file>"
+  - "sed -n '<range>p' <file>"
+  - "grep <pattern> <file>"
+  - "grep -R <pattern> ."
+  - "rg <pattern>"
+  - "rg --files"
+  - "git status"
+  - "git status --short"
+  - "git diff"
+  - "git diff --cached"
+  - "git diff --stat"
+  - "git diff <base>...HEAD"
+  - "git log"
+  - "git log --oneline"
+  - "git show"
+  - "git branch --show-current"
+  - "git rev-parse --show-toplevel"
+  - "git grep <pattern>"
+
+validation_commands:
+  - './mvnw -s "$MAVEN_SETTINGS" compile'
+  - './mvnw -s "$MAVEN_SETTINGS" test'
+  - './mvnw -s "$MAVEN_SETTINGS" verify'
+  - 'mvn -s "$MAVEN_SETTINGS" compile'
+  - 'mvn -s "$MAVEN_SETTINGS" test'
+  - 'mvn -s "$MAVEN_SETTINGS" verify'
+
+forbidden_examples:
+  - "git add"
+  - "git commit"
+  - "git reset"
+  - "git checkout"
+  - "git switch"
+  - "git restore"
+  - "git clean"
+  - "git stash"
+  - "git merge"
+  - "git rebase"
+  - "git cherry-pick"
+  - "git apply"
+  - "git am"
+  - "git tag"
+  - "git branch -D"
+  - "rm"
+  - "rmdir"
+  - "mv"
+  - "cp"
+  - "touch"
+  - "mkdir"
+  - "chmod"
+  - "chown"
+  - "sed -i"
+  - "perl -pi"
+  - "tee"
+  - "truncate"
+  - "shell redirection >"
+  - "shell redirection >>"
+
+forbidden_maven_goals:
+  - "deploy"
+  - "release:prepare"
+  - "release:perform"
+  - "versions:set"
+  - "versions:use-latest-versions"
+  - "dependency:purge-local-repository"
+  - "spotless:apply"
+  - "fmt:format"
+  - "spring-javaformat:apply"
+
+notes:
+  - "Do not execute scripts unless their read-only behavior is established."
+  - "Do not invoke IDE formatters or organize-imports actions."
+  - "Prefer the Maven Wrapper when it exists."

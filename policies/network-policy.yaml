@@ -1,0 +1,22 @@
+default: deny
+
+rules:
+  - "No production systems."
+  - "No external databases."
+  - "No Kubernetes clusters."
+  - "No GitLab runners."
+  - "No cloud environments."
+  - "No secret stores."
+  - "No remote servers."
+  - "No payment providers."
+  - "No external APIs."
+  - "No network request unless explicitly authorized for the current review."
+
+docker:
+  default_execution: deny
+  allow_only_when:
+    - "the caller explicitly requests Docker or CI/CD validation"
+
+notes:
+  - "Docker must not be used as a fallback when Maven validation is unavailable."
+  - "Deployment, publishing, upload, and release operations remain forbidden."
