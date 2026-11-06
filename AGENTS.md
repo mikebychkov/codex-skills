@@ -49,6 +49,27 @@ Clearly distinguish:
 
 Detailed review methodology lives in the `review-merge-request` skill.
 
+## Review shorthand
+
+Interpret `code review <directory>, <source-branch>, <target-branch>` as:
+
+- Use this review-system's AGENTS.md and `review-merge-request` skill,
+  including applicable policies and harness requirements.
+- Review `<target-branch>...<source-branch>` using local refs (the diff from
+  the branches' merge base to the source branch).
+- Review committed changes only; exclude staged, unstaged, and untracked changes.
+- Treat the target repository as source-read-only.
+- Do not fetch or access the network.
+- Follow the prescribed Maven validation procedure using `MAVEN_SETTINGS`.
+- Report introduced defects with severity and file/line references.
+- Report validation limitations separately.
+
+Expand `~` to the user's home directory. Resolve relative target directories
+against this review-system directory. `HEAD` means the target repository's
+current commit. If a required ref is missing, report the limitation.
+
+Example: `code review ~/Projects/kg-oct-service, HEAD, staging`.
+
 ## Project context
 
 Target repositories are expected to be Java and Spring Boot projects built with
