@@ -225,3 +225,23 @@ The final review includes the complete readable Rule Coverage Report and links
 separate JSON artifacts where supported. If artifact creation is unavailable,
 include coverage in the response and explicitly report the artifact/validator
 limitation; do not claim successful machine validation.
+
+## Efficient Rule Coverage
+
+Rule coverage is an audit of the actual review process,
+not a separate review pass.
+
+During the normal review, collect evidence for all applicable rules.
+
+Do not re-read already inspected code solely to produce PASS entries.
+
+Use the Rule Registry to generate the complete rule list.
+
+For clearly irrelevant rules, use NOT_APPLICABLE with concise reasons.
+
+Only perform additional targeted inspection when a potentially
+applicable rule remains UNVERIFIED and the missing evidence is
+reasonably accessible.
+
+Do not perform repeated full-repository searches to resolve
+non-critical coverage uncertainty.

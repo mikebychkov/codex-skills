@@ -63,23 +63,17 @@ Interpret `code review <directory>, <source-branch>, <target-branch>` as:
 - Follow the prescribed Maven validation procedure using `MAVEN_SETTINGS`.
 - Report introduced defects with severity and file/line references.
 - Report validation limitations separately.
-- Perform the mandatory **Rule Coverage Audit** as part of every `code review` invocation.
-- Load and enumerate all registered rules from the `review-merge-request` skill.
-- Evaluate every rule against the reviewed changes and assign exactly one status:
-  - `PASS`
-  - `FAIL`
-  - `NOT_APPLICABLE`
-  - `UNVERIFIED`
-- Never assume `PASS` merely because no finding was produced.
-- Every `FAIL` must reference at least one concrete finding with supporting evidence.
-- Every `PASS` must include evidence of the performed evaluation.
-- Every `NOT_APPLICABLE` and `UNVERIFIED` must include an explicit reason.
-- Generate `rule-coverage.json` and the Markdown Rule Coverage Report using the existing coverage reporting components.
-- Validate `rule-coverage.json` using the existing coverage validator.
-- Store all generated coverage reports and audit artifacts outside the target source repository.
-- Include the Rule Coverage Report and its validation status in the final review output.
-- Do not consider the review complete until coverage validation has been executed. If validation cannot be performed, explicitly report the limitation and mark coverage as unverified.
-- Preserve the existing source-read-only, offline review, Maven validation, and Git integrity requirements.
+- Perform the mandatory Rule Coverage Audit as part of every `code review` invocation.
+- Use a **single-pass, change-oriented review**: classify changed files and apply all relevant rules while inspecting each code area. Do not perform a separate full-diff scan for every rule.
+- Use the deterministic Rule Registry to enumerate all registered rule IDs and identify rule applicability before detailed review.
+- Evaluate applicable rules during the normal code review process; do not repeat source inspection solely to populate the coverage report.
+- For rules that are clearly unrelated to the changed files or technologies, assign `NOT_APPLICABLE` using concise, category-level reasoning.
+- Record `PASS`, `FAIL`, `NOT_APPLICABLE`, or `UNVERIFIED` for every registered rule.
+- Reuse existing findings and inspection evidence in the coverage report. Do not generate duplicate explanations or perform additional code analysis for reporting alone.
+- Use `UNVERIFIED` when verification evidence is insufficient. Never invent evidence or mark a rule `PASS` merely because no finding was produced.
+- Generate and validate the machine-readable coverage report using the existing Python components, then render the Markdown summary.
+- Keep the final response concise: show coverage totals, all `FAIL` and `UNVERIFIED` rules, and reference the complete coverage artifact rather than reproducing every `PASS` and `NOT_APPLICABLE` entry.
+- Store all generated artifacts outside the target repository and preserve existing read-only, offline, Maven validation, and integrity requirements.
 
 Expand `~` to the user's home directory. Resolve relative target directories
 against this review-system directory. `HEAD` means the target repository's
