@@ -63,6 +63,23 @@ Interpret `code review <directory>, <source-branch>, <target-branch>` as:
 - Follow the prescribed Maven validation procedure using `MAVEN_SETTINGS`.
 - Report introduced defects with severity and file/line references.
 - Report validation limitations separately.
+- Perform the mandatory **Rule Coverage Audit** as part of every `code review` invocation.
+- Load and enumerate all registered rules from the `review-merge-request` skill.
+- Evaluate every rule against the reviewed changes and assign exactly one status:
+  - `PASS`
+  - `FAIL`
+  - `NOT_APPLICABLE`
+  - `UNVERIFIED`
+- Never assume `PASS` merely because no finding was produced.
+- Every `FAIL` must reference at least one concrete finding with supporting evidence.
+- Every `PASS` must include evidence of the performed evaluation.
+- Every `NOT_APPLICABLE` and `UNVERIFIED` must include an explicit reason.
+- Generate `rule-coverage.json` and the Markdown Rule Coverage Report using the existing coverage reporting components.
+- Validate `rule-coverage.json` using the existing coverage validator.
+- Store all generated coverage reports and audit artifacts outside the target source repository.
+- Include the Rule Coverage Report and its validation status in the final review output.
+- Do not consider the review complete until coverage validation has been executed. If validation cannot be performed, explicitly report the limitation and mark coverage as unverified.
+- Preserve the existing source-read-only, offline review, Maven validation, and Git integrity requirements.
 
 Expand `~` to the user's home directory. Resolve relative target directories
 against this review-system directory. `HEAD` means the target repository's

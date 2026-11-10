@@ -1,0 +1,428 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reviewer-declared rule coverage v1",
+  "description": "Structural validity does not establish semantic verification. UNVERIFIED includes possible applicability.",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "review_id": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "change": {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "repository",
+        "change"
+      ],
+      "additionalProperties": false
+    },
+    "ruleset": {
+      "$ref": "#/$defs/manifest"
+    },
+    "evaluations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evaluation"
+      },
+      "minItems": 1
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "priority": {
+            "enum": [
+              "P0",
+              "P1",
+              "P2",
+              "P3"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/finding_location"
+            },
+            "minItems": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "priority",
+          "title",
+          "locations",
+          "evidence"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "minItems": 0
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "registered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "applicable": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_applicable": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unverified": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completion": {
+          "enum": [
+            "VALID_COMPLETE",
+            "VALID_INCOMPLETE"
+          ]
+        }
+      },
+      "required": [
+        "registered",
+        "applicable",
+        "passed",
+        "failed",
+        "not_applicable",
+        "unverified",
+        "completion"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "version",
+    "review_id",
+    "target",
+    "ruleset",
+    "evaluations",
+    "findings",
+    "limitations",
+    "summary"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "location": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "start_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_line": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "file"
+      ],
+      "additionalProperties": false
+    },
+    "finding_location": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "start_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_line": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "file",
+        "start_line",
+        "end_line"
+      ],
+      "additionalProperties": false
+    },
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "rules": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+                    },
+                    "title": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "line": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "line"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "path",
+              "sha256",
+              "rules"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "version",
+        "sha256",
+        "files"
+      ],
+      "additionalProperties": false
+    },
+    "evaluation": {
+      "type": "object",
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "pattern": "^[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_APPLICABLE",
+            "UNVERIFIED"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "inspected": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/location"
+          },
+          "minItems": 0
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "minItems": 0
+        },
+        "finding_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "minItems": 0
+        },
+        "needed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "rule_id",
+        "status",
+        "reason",
+        "inspected",
+        "evidence",
+        "finding_ids",
+        "limitations",
+        "needed"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "status": {
+                  "const": "PASS"
+                },
+                "inspected": {
+                  "minItems": 1
+                },
+                "evidence": {
+                  "minItems": 1
+                },
+                "finding_ids": {
+                  "maxItems": 0
+                },
+                "limitations": {
+                  "maxItems": 0
+                },
+                "needed": {
+                  "maxItems": 0
+                }
+              }
+            },
+            {
+              "properties": {
+                "status": {
+                  "const": "FAIL"
+                },
+                "inspected": {
+                  "minItems": 1,
+                  "items": {
+                    "required": [
+                      "start_line",
+                      "end_line"
+                    ]
+                  }
+                },
+                "evidence": {
+                  "minItems": 1
+                },
+                "finding_ids": {
+                  "minItems": 1
+                },
+                "limitations": {
+                  "maxItems": 0
+                },
+                "needed": {
+                  "maxItems": 0
+                }
+              }
+            },
+            {
+              "properties": {
+                "status": {
+                  "const": "NOT_APPLICABLE"
+                },
+                "finding_ids": {
+                  "maxItems": 0
+                },
+                "limitations": {
+                  "maxItems": 0
+                },
+                "needed": {
+                  "maxItems": 0
+                }
+              }
+            },
+            {
+              "properties": {
+                "status": {
+                  "const": "UNVERIFIED"
+                },
+                "limitations": {
+                  "minItems": 1
+                },
+                "needed": {
+                  "minItems": 1
+                },
+                "finding_ids": {
+                  "maxItems": 0
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

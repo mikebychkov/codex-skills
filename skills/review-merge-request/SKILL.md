@@ -53,7 +53,9 @@ The caller or harness is responsible for identifying the requested target.
 7. Separate source defects from environment limitations.
 8. Send candidate findings to the judge when the configured workflow includes a
    judge.
-9. Produce output using `assets/output-format.md`.
+9. Complete the mandatory Rule Coverage Audit below; validate the final report
+   after any judge revisions.
+10. Produce output using `assets/output-format.md`.
 
 ## Finding threshold
 
@@ -168,3 +170,58 @@ of Maven availability. Before each validation, call `before-validation`; after
 each attempted validation, always call `after-validation` (including nonzero
 exit status). Run final `verify-working-tree` even if Maven is skipped.
 Use unique external `REVIEW_STATE_DIR` per review. Preserve Maven exit status.
+
+
+## Mandatory Rule Coverage Audit
+
+Use `validators/README.md` for commands, storage, provenance and exit codes.
+The configured rule registry is `rules/rule-files.json`; enumerate **all** IDs
+with `validators/rule_registry.py`. Preserve IDs, severities, scope restrictions,
+exceptions and false-positive guards. The registry is not a substitute for reading
+rules. Load applicable rule files and record the supplied manifest and hashes.
+Classify every registered rule, including rules outside the changed technologies.
+
+Write exactly one reviewer-declared evaluation per rule using
+`assets/rule-coverage.schema.json`:
+
+- `PASS`: applicable and evaluated with sufficient evidence; record inspected
+  files/ranges, what was checked in `reason`, and supporting `evidence`.
+  Absence of findings, registry membership or successful JSON validation never
+  implies PASS.
+- `FAIL`: a concrete violation; record file/line ranges, supporting evidence and
+  at least one stable finding ID. Multiple findings per rule are allowed. Apply
+  the existing finding threshold; do not invent violations to fill coverage.
+- `NOT_APPLICABLE`: explain why the rule does not apply using concrete diff
+  context in `reason`; lack of a finding does not establish non-applicability.
+- `UNVERIFIED`: applies or may apply but verification is unfinished; explain the
+  limitation and list additional evidence/checks in `needed`. Missing context,
+  inaccessible dependencies, unavailable execution or insufficient analysis
+  coverage must remain explicit. Do not default these cases to PASS.
+
+Include all final findings with stable IDs and P0–P3 priorities in `findings`.
+Findings outside registered rules remain allowed; do not force an unrelated rule
+association. Deduplicate/reconcile findings and FAIL references after judging.
+`summary.applicable` conservatively includes PASS, FAIL and UNVERIFIED (including
+possible applicability); its completion is structural, not semantic assurance.
+
+Store JSON only in the external `REVIEW_STATE_DIR` initialized by the existing
+integrity hook; never in the reviewed repository. Run `validate_coverage.py`
+against the live configured rules. Correct invalid declarations yourself; the
+validator never repairs reports. A valid report with UNVERIFIED is
+`VALID_INCOMPLETE`; report this honestly. `VALID_COMPLETE` can contain FAILs and
+means every registered rule has a structurally supported final declaration,
+not that the code is defect-free or every violation was detected.
+
+Use registry supply and validator artifact commands to log registered rules,
+files supplied to the process, reviewer declarations and validator outcomes.
+Confirmed reads require actual tool/harness event references; do not infer them
+from supply, registry or declarations. This repository has no tool-call
+interceptor and no integrated judge runner. When unavailable, state that actual
+reviewer reads and judge execution were not observed. Updating judge instructions
+does not execute the judge. Only an executing harness may log observed reads or
+judge results, with actual execution references; never fabricate these events.
+
+The final review includes the complete readable Rule Coverage Report and links
+separate JSON artifacts where supported. If artifact creation is unavailable,
+include coverage in the response and explicitly report the artifact/validator
+limitation; do not claim successful machine validation.
