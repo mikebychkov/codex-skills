@@ -66,13 +66,13 @@ These rules are derived from 14 earlier and 5 additional annotated GitLab MR scr
 - **Default priority:** P3.
 - **Fix:** Reformat for readability without changing query semantics.
 
-## JPA-STYLE-001 — Prefer native queries where this team convention applies
+## JPA-STYLE-001 — Require native SQL for application-defined database queries
 
-- **Applies to:** New/changed custom Spring Data JPA queries.
-- **Check:** Follow the team's preference for native SQL rather than mixing JPQL/native queries in the same repository.
-- **Exceptions:** JPQL is a valid, sometimes preferable abstraction, especially for entity joins/fetch behavior and portability. `JOIN FETCH` cannot be mechanically changed into native SQL. Do not call correct JPQL broken merely because it is non-native. This remains a style decision unless contract or performance impact is shown.
-- **Default priority:** P3.
-- **Fix:** If native SQL is chosen, preserve entity mapping, projections, count queries and fetch semantics.
+- **Applies to:** New or changed application-defined database queries, including Spring Data JPA `@Query`, named queries, derived query methods, and queries built through EntityManager, Criteria or Specifications.
+- **Check:** Require native SQL. For Spring Data JPA `@Query`, require `nativeQuery = true` (the actual annotation attribute, not `native = true`). Report JPQL/HQL, `@Query` with omitted/false `nativeQuery`, and newly introduced or changed derived/Criteria/Specification queries as violations of this mandatory team convention. Native JDBC SQL and equivalent native JPA query APIs satisfy the requirement without an annotation flag.
+- **Exceptions:** Do not flag untouched queries or inherited framework CRUD methods solely because their implementation has no configurable `nativeQuery` flag. Report this as a team-policy violation, not a claim that JPQL is inherently invalid or slower. Do not mechanically translate `JOIN FETCH` or other ORM-specific behavior without preserving its semantics.
+- **Default priority:** P2.
+- **Fix:** Express the application-defined query as native SQL using `@Query(nativeQuery = true)` or an equivalent native API. Preserve parameter binding, entity mapping, projections, pagination/count queries and fetch behavior.
 
 ## JPA-ARCH-001 — Reduce repetition in complex optional-filter queries
 
@@ -154,6 +154,14 @@ These rules are derived from 14 earlier and 5 additional annotated GitLab MR scr
 - **Default priority:** P3; P2 only if duplicated validation already results in demonstrably inconsistent behavior.
 - **Fix:** Encapsulate the condition and failure handling in a dedicated validation method or shared validator when warranted; preserve the order of checks and the externally visible error contract.
 
+## JAVA-VALIDATION-002 — Consider extracting exception-throwing if blocks into private validation methods
+
+- **Applies to:** New or changed Java `if` blocks containing a `throw` statement, including a single condition that is not repeated elsewhere.
+- **Check:** Mark the block as a candidate for extraction into an internal private validation method with a descriptive name such as `validateAmountRange(...)`. Present this as a non-blocking maintainability recommendation, not a functional defect or mandatory refactoring.
+- **Exceptions:** Do not flag untouched code or checks already encapsulated in a private validation method. A short, obvious guard may remain inline when extraction would reduce clarity. Do not duplicate a recommendation already reported under JAVA-VALIDATION-001, or describe side-effectful processing as pure validation.
+- **Default priority:** P3 — advisory, non-critical maintainability recommendation.
+- **Fix:** Consider moving the condition and exception into a private `validate...` method within the same class, preserving the exception type, message, evaluation order and externally visible behavior.
+
 ## JAVA-ERROR-003 — Preserve specific context in business-conflict error responses
 
 - **Applies to:** Changed branches throwing `ConflictException`, `InvalidStatusException`, or other business exceptions for distinct domain conflicts.
@@ -161,6 +169,14 @@ These rules are derived from 14 earlier and 5 additional annotated GitLab MR scr
 - **Exceptions:** Do not expose secrets, account identifiers, internal details or sensitive values in public responses. A generic exception class is acceptable when a structured, stable response code or safe message already supplies the concrete reason. Logging details alone do not necessarily satisfy the API's error contract; conversely not every internal detail belongs in the API response.
 - **Default priority:** P2 if the change breaks the expected API error semantics; otherwise P3 for improving diagnostics.
 - **Fix:** Use distinct safe messages or structured domain error codes, while retaining consistent HTTP semantics and logging without duplicate sensitive data.
+
+## SPRING-TX-001 — Do not call external APIs inside an active database transaction
+
+- **Applies to:** New or changed execution paths making external API calls while a database transaction is active, including HTTP/RPC calls to internal services and payment providers.
+- **Check:** Treat an external API call inside an active database transaction as a prohibited pattern. Trace the call chain and actual transaction boundary: method/class-level `@Transactional`, transactional callers, propagation and programmatic transactions. Explain the concrete impact: network latency or timeouts prolong database resource/lock retention, and a database rollback cannot undo an external side effect. `readOnly = true` and configured network timeouts do not exempt the call.
+- **Exceptions:** Do not infer an active transaction solely from an annotation: account for proxy interception and self-invocation. Do not flag local Java method calls, request construction, or deferred work whose external execution occurs after transaction completion. A call executed with the transaction actually suspended (for example, an effective `NOT_SUPPORTED` boundary) is outside this rule. If transaction activity or the external call cannot be established, use UNVERIFIED rather than inventing a violation.
+- **Default priority:** P1 — high-priority, blocking transaction-boundary defect; support the finding with the concrete transactional call path and impact, not annotation presence alone.
+- **Fix:** Move external API execution outside the active database transaction and keep database transactions short. Where remote side effects and persistence require coordination, use explicit operation states, idempotency and an appropriate outbox/compensation workflow; preserve consistency when splitting the transaction. Merely extracting the call into a private method or adding `REQUIRES_NEW` does not remove the external call from a transaction.
 
 ---
 
