@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+  "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<module name="Checker">
+  <property name="charset" value="UTF-8"/>
+  <module name="TreeWalker">
+    <module name="AvoidStaticImport"/>
+    <module name="UnnecessaryFullyQualifiedType"/>
+    <!-- Conservative signals for known gaps in the pinned check. No Java regex parser. -->
+    <module name="MatchXpath">
+      <property name="query" value="//ANNOTATION | //IMPORT[.//STAR] | //DOT[./LITERAL_CLASS] | //TYPE_PARAMETER | (//DOT[*[1][self::IDENT and matches(@text, '^[A-Z]')]] | //DOT[./DOT/IDENT[matches(@text, '^[A-Z]')]] | //DOT[./DOT and not(parent::DOT or ancestor::TYPE or parent::LITERAL_NEW or parent::EXTENDS_CLAUSE or parent::IMPLEMENTS_CLAUSE or parent::LITERAL_THROWS or parent::TYPE_ARGUMENT)])[not(ancestor::IMPORT or ancestor::STATIC_IMPORT or ancestor::PACKAGE_DEF)]"/>
+      <message key="matchxpath.match" value="FQCN coverage requires targeted verification (annotation, class literal, nested type or wildcard import)."/>
+    </module>
+  </module>
+</module>

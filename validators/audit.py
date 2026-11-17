@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 from validators.common import external_state
 
 SOURCES = {
+    "static_analysis_started": "static_analyzer",
+    "static_analysis_result": "static_analyzer",
     "rules_registered": "registry",
     "rule_files_supplied": "registry",
     "tool_read_confirmed": "harness_observed",

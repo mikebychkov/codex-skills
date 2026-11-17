@@ -81,3 +81,14 @@ notes:
   - "Do not execute scripts unless their read-only behavior is established."
   - "Do not invoke IDE formatters or organize-imports actions."
   - "Prefer the Maven Wrapper when it exists."
+
+# Explicit exception for this reviewed adapter, not arbitrary target scripts.
+static_analysis:
+  adapter: "python3 <review-system>/static-analysis/run_checkstyle.py --source <local-ref> --target <local-ref> --review-id <id>"
+  allowed_operations:
+    - "Read local committed Git blobs and merge-base diff with optional locks disabled."
+    - "Execute java -jar only with the checksum-verified bundled Checkstyle distribution and bundled config."
+    - "Write snapshots/reports only into initialized external REVIEW_STATE_DIR."
+  requirements:
+    - "No network, project scripts, Maven plugins, Docker, automatic fixes or source/Git writes."
+    - "Verify integrity before and after; stop on any unexpected tracked modification."

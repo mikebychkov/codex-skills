@@ -245,3 +245,54 @@ reasonably accessible.
 
 Do not perform repeated full-repository searches to resolve
 non-critical coverage uncertainty.
+
+## Deterministic Java style analysis
+
+After initializing integrity state and the Rule Registry, run the analyzer once
+for the requested committed branch comparison, before/during the normal review:
+
+```sh
+python3 static-analysis/run_checkstyle.py --source <source-ref> --target <target-ref> --review-id <review-id>
+```
+
+Paths above are relative to review-system; the analyzer resolves its bundled
+JAR/config relative to its own location. See `../../static-analysis/README.md`.
+It exports only changed committed Java blobs into guarded external state and
+batches them in one Checkstyle analysis invocation. It never reads dirty Java
+worktree contents or downloads dependencies. Deleted and rename-only files do
+not introduce style violations. The analyzer has its own before/after integrity
+checks independent of Maven settings; retain final `verify-working-tree`.
+
+Consume `static-analysis-results.json`: include confirmed findings in the normal
+Findings section, reuse its existing-schema `findings` and `evaluations` for
+JAVA-STYLE-001/002 in the Rule Coverage Report. Do not independently recheck
+these rules when complete deterministic evidence exists. Other rules retain the
+single-pass, change-oriented review. No additional LLM pass is required.
+
+JAVA-NAMING-001 is a separate naming criterion: Checkstyle's
+UnnecessaryFullyQualifiedType intentionally accepts genuine name collisions.
+During the normal inspection of changed code, report a demonstrated collision
+forcing an FQCN as P3 under JAVA-NAMING-001, even when JAVA-STYLE-002 is PASS.
+Do not infer naming-rule coverage from the style analyzer or scan the repository
+again for this purpose. Report one naming finding rather than also calling the
+required qualification unnecessary.
+
+For known gaps, parser errors, missing/invalid JAR or uncertain attribution,
+retain UNVERIFIED and describe the limitation. Targeted inspection may resolve
+an uncovered context; record actual evidence and reconcile coverage explicitly.
+A confirmed finding may coexist with UNVERIFIED coverage when other code could
+not be analyzed: retain the finding without falsely claiming complete coverage.
+Do not promote an absence of diagnostics to PASS without completed file coverage.
+For non-branch scopes (staged/uncommitted/commit-only), this adapter is not yet
+supported: do not substitute a branch comparison; mark the affected rules
+UNVERIFIED and use targeted review of the requested scope.
+
+Optional `--coverage-draft <external-draft.json>` merges the two evaluations and
+findings into a new `rule-coverage-static-draft.json` using the existing contract;
+all unrelated declarations remain. The draft target must use the analyzer's
+resolved `target.change` (`merge-base..source-commit`) and repository, and the
+same review ID. Or copy these entries into the final coverage report during its
+normal assembly. Validate/render the final report using the existing validator;
+no second coverage schema or renderer is introduced. Exit 0 means analysis
+completed (possibly with findings); 3 means incomplete; 2 means invocation or
+artifact/integrity failure. Measure cost using `elapsed_seconds`, not estimates.

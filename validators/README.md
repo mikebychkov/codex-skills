@@ -177,3 +177,16 @@ validator, CLI/audit/rendering flow, external path guards, existing hook lifecyc
 unavailable Maven settings and mutation detection. Existing audit JSON files are
 historical results, not executable test suites. Existing hook and Maven runner
 code is unchanged.
+
+## Deterministic Java evidence
+
+`../static-analysis/run_checkstyle.py` writes `static-analysis-results.json` in
+this same guarded state. Its `findings` and `evaluations` use the existing
+coverage schema; merge them during report assembly or use its validated optional
+`--coverage-draft` bridge, then run the normal final validator/renderer.
+It supplies JAVA-STYLE-001 and JAVA-STYLE-002 without a second LLM inspection
+pass. Incomplete execution is UNVERIFIED, never an inferred PASS. See
+`../static-analysis/README.md` for local merge-base scope, installation, known
+coverage gaps, audit events and explicit real-test skips when the JAR is absent.
+The audit event types `static_analysis_started` and `static_analysis_result`
+have source `static_analyzer`; they do not attest model reads or judge execution.

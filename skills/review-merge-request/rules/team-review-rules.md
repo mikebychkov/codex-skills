@@ -10,6 +10,24 @@ These rules are derived from 14 earlier and 5 additional annotated GitLab MR scr
 - **Default priority:** P3.
 - **Fix:** Use qualified class references; remove newly introduced static imports.
 
+## JAVA-STYLE-002 — Avoid unnecessary fully qualified Java type names
+
+- **Applies to:** Added or modified Java type references in non-generated source, including declarations, return types and constructor invocations.
+- **Check:** Prefer imports and simple type names over unnecessary package-qualified references. Consume the diff-aware Checkstyle `UnnecessaryFullyQualifiedType` result for supported syntax; do not repeat deterministic checks in an LLM pass. Use targeted inspection only for explicitly uncovered contexts or uncertain attribution, retaining UNVERIFIED without sufficient evidence.
+- **Exceptions:** Ignore package/import declarations, comments, Javadoc, string literals, generated source and unchanged legacy violations. Qualification required to resolve a genuine naming conflict is not an unnecessary-qualification violation, but must be assessed and reported as a P3 naming problem under JAVA-NAMING-001. Checkstyle is syntax-based, not a complete symbol resolver; unsupported reference forms must not become speculative findings. See `../../../static-analysis/README.md` for pinned-check limitations and coverage handling.
+- **Default priority:** P3.
+- **Rationale:** Unnecessary qualification obscures type usage and makes executable code harder to read.
+- **Fix:** Add an appropriate import and use the simple type name where this preserves name resolution; retain qualification where necessary to disambiguate types. For example, replace a qualified return type and `new` expression with an imported `ExchangeRateResponse`.
+
+## JAVA-NAMING-001 — Avoid type-name collisions that force fully qualified references
+
+- **Applies to:** New or changed Java type references where different types with the same simple name are used in the same code area and disambiguation forces a fully qualified reference.
+- **Check:** Report the collision as a naming/readability problem even though the fully qualified reference is valid Java and required with the current names. Cite the competing type names and the changed qualified usage. For example, importing the application's `ExchangeRateResponse` while declaring a variable of `uz.octo.commons.dtos.adapters.lightnet.response.ExchangeRateResponse` requires a P3 finding. A clean `UnnecessaryFullyQualifiedType` result does not satisfy this rule: that check deliberately permits naming conflicts. Evaluate this rule while inspecting the affected code during the normal single-pass review; do not add a separate full-repository naming scan or duplicate a JAVA-STYLE-002 finding for the same reference.
+- **Exceptions:** Do not flag unrelated same-named classes in different files unless they demonstrably collide in the changed code area. Exclude generated code, imports/package declarations by themselves, text in comments/strings and unchanged legacy references. External or generated type names may be outside this repository's control; this changes the recommended correction, not the P3 classification of a demonstrated collision. Use UNVERIFIED if the identities or reason for qualification cannot be established.
+- **Default priority:** P3 — naming and readability convention, not a compilation error.
+- **Rationale:** Requiring package-qualified names in executable code makes domain and provider DTOs harder to distinguish and hides insufficiently specific type names.
+- **Fix:** Give an application-owned type a role-specific name, such as `OperationExchangeRateResponse`, or introduce an appropriately named local adapter/model when that improves the boundary. Preserve external contracts and serialization behavior; do not simply remove required qualification or import two types with the same simple name.
+
 ## SPRING-SEC-001 — Verify alignment of Swagger/OpenAPI and Spring Security
 
 - **Applies to:** Changes in `SecurityFilterChain`, JWT/Bearer authentication, endpoint whitelist, `SwaggerConfig`, and OpenAPI security declarations.

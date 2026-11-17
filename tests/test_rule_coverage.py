@@ -194,7 +194,19 @@ class CoverageTests(unittest.TestCase):
 
     def test_actual_rules(self):
         actual = registry()
-        self.assertEqual(len(rule_ids(actual)), 22)
+        self.assertEqual(set(rule_ids(actual)), {
+            'GENERIC-001', 'GENERIC-002',
+            'JAVA-STYLE-001', 'JAVA-STYLE-002', 'SPRING-SEC-001',
+            'JAVA-NAMING-001',
+            'JAVA-ARCH-001', 'JAVA-ARCH-002', 'JAVA-ARCH-003',
+            'SQL-STYLE-001', 'SQL-PERF-001', 'JAVA-TIME-001', 'SQL-STYLE-002',
+            'JPA-STYLE-001', 'JPA-ENTITY-001', 'JPA-ARCH-001',
+            'JAVA-DOMAIN-001', 'SPRING-CONFIG-001', 'SCHED-001',
+            'JAVA-ERROR-001', 'JAVA-ERROR-002', 'JAVA-ERROR-003', 'JAVA-ERROR-004',
+            'JAVA-API-001', 'JAVA-TIME-002', 'JAVA-VALIDATION-001', 'JAVA-VALIDATION-002',
+            'JAVA-LOG-001', 'SPRING-TX-001', 'SPRING-TX-002', 'SPRING-CONFIG-002',
+            'JAVA-FLOW-001', 'JAVA-CONCURRENCY-001',
+        })
         self.assertEqual(actual, registry())
         self.assertEqual(validate_report(report_for(actual), actual)['classification'], 'VALID_COMPLETE')
 
